@@ -13,6 +13,8 @@
  #include "vector.h"
 
 
+// Comment to commit and push
+
 void help();
 void clean_input(const char* inputs, char* output);
 void parse_input(char* input);
