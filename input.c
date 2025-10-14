@@ -13,7 +13,7 @@
  #include "vector.h"
 
 
-// Comment to commit and push
+// Testing editing again
 
 void help();
 void clean_input(const char* inputs, char* output);
