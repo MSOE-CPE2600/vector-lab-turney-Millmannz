@@ -31,7 +31,7 @@ void parse_input(char* input);
         clean_input(user_input, clean_array);
         if(strcmp(user_input, "-h\n")==0){help();}
         else if(strcmp(user_input, "list\n")==0){print_vectors();}
-        else if(strcmp(user_input, "clear\n")==0){clear();}
+        else if(strcmp(user_input, "clear\n")==0){clear_list();}
         else if(strcmp(user_input, "quit\n") == 0){break;}
         else{
             parse_input(clean_array);
@@ -96,7 +96,6 @@ void clean_input(const char* inputs, char* output){
                 token5[strcspn(token5, "\n")] = '\0';
                 //Figure out which operand is used and calculate and assign value
                 if(strcmp(token4,"+") == 0 ){
-
                     if(!is_float(token5) && !is_float(token3)){
                         if(find_vector(token3, 1)> -1){
                             if(find_vector(token5, 1)> -1){

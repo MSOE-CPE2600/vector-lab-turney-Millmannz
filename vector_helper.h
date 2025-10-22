@@ -5,7 +5,11 @@
  * Date: 10/10/2025
  */
 
+#include "vector.h"
+#include "node.h"
+
 void print_vectors();
+void clear_list();
 int find_vector(char name[], int print);
 void print_vector(int i);
 void assign(char name[], float x, float y, float z);
@@ -15,3 +19,5 @@ float getZ(char* name);
 int is_float(const char *input);
 void help();
 void clear();
+vector* newVector(char name[], float x, float y, float z);
+Node* new_node(Node *next, Node *prev, char name[], float x, float y, float z);

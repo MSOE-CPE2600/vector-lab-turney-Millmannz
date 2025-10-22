@@ -10,68 +10,113 @@
  #include <ctype.h>
  #include <stdlib.h>
  #include "vector.h"
+ #include "node.h"
 
- vector vectors[10];
- int open_index = 0;
 
-//int print is used to contol whether or not the Error statement is printed out
+Node *head = NULL;
+
+vector* newVector(char name[], float x, float y, float z){
+  vector *returnVector = malloc(sizeof(vector));
+  strncpy(returnVector->name, name, sizeof(returnVector->name));
+    returnVector->name[sizeof(returnVector->name) - 1] = '\0';
+  returnVector->x = x;
+  returnVector->y = y;
+  returnVector->z = z;
+  return returnVector;
+}
+Node* new_node(Node *next, Node *prev, char name[], float x, float y, float z){
+  Node *returnNode = malloc(sizeof(Node));
+  returnNode->vectors = *newVector(name, x, y, z);
+  returnNode->next = next;
+  returnNode->prev = prev;
+  return returnNode;
+}
+Node* get_node(int index){
+  if(index == -1){
+    return NULL;
+  }
+  Node* search = head;
+  for(int i = 0; i < index; i++){
+    search = search->next;
+  }
+  return search;
+}
 int find_vector(char* name, int print){
-   for(int i = 0; i < 10; i++){
-      if(strcmp(vectors[i].name, name) == 0){
-         return i;
-      }
-   }
-   if(print == 1){printf("Error: no such vector exists(-h for help)\n");}
-   return -1;
+  Node* search = head;
+  int index = 0;
+  while(search != NULL){
+    if(strcmp(search->vectors.name, name) == 0){
+      return index;
+    }
+    index++;
+    search = search->next;
+  }
+  if(print == 1){printf("Error: no such vector exists(-h for help)\n");}
+  return -1;
  }
 
  float getX(char* name){
-   return vectors[find_vector(name, 0)].x;
+   return get_node(find_vector(name, 0))->vectors.x;
  }
 
  float getY(char* name){
-   return vectors[find_vector(name, 0)].y;
+   return get_node(find_vector(name, 0))->vectors.y;
  }
 
  float getZ(char* name){
-   return vectors[find_vector(name, 0)].z;
+   return get_node(find_vector(name, 0))->vectors.z;
  }
 
  void print_vector(int i){
-   printf("%s = %.2f, %.2f, %.2f\n", vectors[i].name, vectors[i].x, vectors[i].y, vectors[i].z);
+  Node* search = head;
+  int index = 0;
+  while(search != NULL){
+    if(index == i){
+      printf("%s = %.2f, %.2f, %.2f\n", search->vectors.name, search->vectors.x, search->vectors.y, search->vectors.z);
+      return;
+    }
+    index++;
+    search = search->next;
+  }
+   
  }
 
  void print_vectors(){
-    for(int i = 0; i < 10; i++){
-        if(vectors[i].name[0] == '\0'){
-            break;
-        }
-        printf("%s: %.2f, %.2f, %.2f\n", vectors[i].name, vectors[i].x, vectors[i].y, vectors[i].z);
+  Node* search = head;
+  int index = 0;
+  while(search != NULL){
+    if(search->vectors.name[0] == '\0'){
+      break;
     }
- }
+    printf("%s = %.2f, %.2f, %.2f\n", search->vectors.name, search->vectors.x, search->vectors.y, search->vectors.z);
+    search = search->next;
+    index++;
+  }
+ } 
 
  void assign(char name[], float x, float y, float z){
-    // vectors[open_index].name = name;
-    int used_index = find_vector(name, 0);
-    if(used_index > -1){
-      strcpy(vectors[used_index].name, name);
-      vectors[used_index].x = x;
-      vectors[used_index].y = y;
-      vectors[used_index].z = z;
-      print_vector(used_index);
+    // Node* prev = NULL;
+    Node* search = head;
+    Node* used_vector = get_node(find_vector(name, 0));
+    if(used_vector != NULL){
+      strcpy(used_vector->vectors.name, name);
+      used_vector->vectors.x = x;
+      used_vector->vectors.y = y;
+      used_vector->vectors.z = z;
+      print_vector(find_vector(used_vector->vectors.name, 0));
     }
     else{
-        if(open_index<10){
-            strcpy(vectors[open_index].name, name);
-            vectors[open_index].x = x;
-            vectors[open_index].y = y;
-            vectors[open_index].z = z;
-            print_vector(open_index);
-            open_index++;
+      if(head==NULL){
+        head = new_node(NULL, NULL, name, x, y, z);
+        print_vector(find_vector(head->vectors.name, 0));
+      }
+      else{
+        while(search->next != NULL){
+          search = search->next;
         }
-        else{
-            printf("Error: Only 10 vectors can be stored. Clear vectors or reassign a vector(-h for help)\n");
-        }
+        search->next = new_node(NULL, search, name, x, y, z);
+        print_vector(find_vector(search->next->vectors.name, 0));
+      }
    }
  }
 
@@ -85,8 +130,20 @@ int find_vector(char* name, int print){
     // Check if entire string was valid float and nothing is left unparsed
     return *endptr == '\0';
 }
-void clear() {
-    memset(vectors, 0, sizeof(vector) * 10);
+// void clear() {
+//     memset(vectors, 0, sizeof(vector) * 10);
+// }
+void clear_list() {
+    Node *current = head->next;
+    Node *next;
+
+    while (current != NULL) {
+        next = current->next;  // Save next node
+        free(current);         // Free current node
+        current = next;        // Move to next
+    }
+
+    head->next = NULL;  // Set original head to NULL
 }
 void help(){
     printf("=== Vector Calculator Help ===\n");
