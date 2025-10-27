@@ -15,18 +15,18 @@
 
 Node *head = NULL;
 
-vector* newVector(char name[], float x, float y, float z){
-  vector *returnVector = malloc(sizeof(vector));
-  strncpy(returnVector->name, name, sizeof(returnVector->name));
-    returnVector->name[sizeof(returnVector->name) - 1] = '\0';
-  returnVector->x = x;
-  returnVector->y = y;
-  returnVector->z = z;
-  return returnVector;
+vector newVector(char name[], float x, float y, float z){
+  vector v;
+  strncpy(v.name, name, sizeof(v.name));
+  v.name[sizeof(v.name) - 1] = '\0';
+  v.x = x;
+  v.y = y;
+  v.z = z;
+  return v;
 }
 Node* new_node(Node *next, Node *prev, char name[], float x, float y, float z){
   Node *returnNode = malloc(sizeof(Node));
-  returnNode->vectors = *newVector(name, x, y, z);
+  returnNode->vectors = newVector(name, x, y, z);
   returnNode->next = next;
   returnNode->prev = prev;
   return returnNode;
@@ -134,16 +134,14 @@ int find_vector(char* name, int print){
 //     memset(vectors, 0, sizeof(vector) * 10);
 // }
 void clear_list() {
-    Node *current = head->next;
+    Node *current = head;
     Node *next;
-
     while (current != NULL) {
         next = current->next;  // Save next node
         free(current);         // Free current node
         current = next;        // Move to next
     }
 
-    head->next = NULL; 
     head = NULL; // Set original head to NULL
 }
 void help(){
@@ -155,6 +153,8 @@ void help(){
     printf("  quit                 Exit the program.\n");
     printf("  clear                Clear all stored vectors.\n");
     printf("  list                 List all stored vectors and their values.\n");
+    printf("  save                 Save all stored vectors and their values to a new or existing file.\n");
+    printf("  load                 Load stored vectors and their values from a file.\n");
     printf("  varname = x y z      Assign a vector (spaces or commas allowed).\n");
     printf("                       Example: a = 1 2 3   or   b = 4,5,6\n");
     printf("  varname              Display the current value of the vector.\n");
@@ -166,12 +166,12 @@ void help(){
     printf("                       Example: c = a + b   or   d = c * 2\n");
     printf("\nNote:\n");
     printf("  - All vectors must have exactly 3 components.\n");
-    printf("  - Up to 10 vectors can be stored at once.\n");
     printf("  - Vector names are case-sensitive.\n");
     printf("  - Spaces are required around operators (=, +, -, *).\n");
     printf("  - Floating point values are supported.\n");
     printf("\nExamples:\n");
     printf("  a = 1.0 2.0 3.0\n");
+    printf("  a 1.0 2.0 3.0\n");
     printf("  b = 4,5,6\n");
     printf("  c = a + b\n");
     printf("  d = c * 2\n");
@@ -196,11 +196,11 @@ void help(){
       fptr = fopen(filename, "w");
       while(current != NULL){
         fprintf(fptr, "%s",current->vectors.name);
-        fprintf(fptr,",");
+        fprintf(fptr,", ");
         fprintf(fptr, "%f" ,current->vectors.x);
-        fprintf(fptr,",");
+        fprintf(fptr,", ");
         fprintf(fptr, "%f" ,current->vectors.y);
-        fprintf(fptr,",");
+        fprintf(fptr,", ");
         fprintf(fptr, "%f\n" ,current->vectors.z);
         current = current->next;
       }
@@ -211,11 +211,11 @@ void help(){
     fptr = fopen(filename, "w");
     while(current != NULL){
       fprintf(fptr, "%s",current->vectors.name);
-      fprintf(fptr,",");
+      fprintf(fptr,", ");
       fprintf(fptr, "%f" ,current->vectors.x);
-      fprintf(fptr,",");
+      fprintf(fptr,", ");
       fprintf(fptr, "%f" ,current->vectors.y);
-      fprintf(fptr,",");
+      fprintf(fptr,", ");
       fprintf(fptr, "%f\n" ,current->vectors.z);
       current = current->next;
     }

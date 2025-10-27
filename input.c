@@ -40,6 +40,7 @@ void parse_input(char* input);
             parse_input(clean_array);
         }
     }
+    clear_list();
     return 0;
  }
 

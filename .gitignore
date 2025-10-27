@@ -6,3 +6,5 @@
 lab7
 #txt files
 *.txt
+#csv files
+*.csv
