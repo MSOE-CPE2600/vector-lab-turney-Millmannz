@@ -16,6 +16,7 @@
 // Testing editing again
 
 void help();
+void load();
 void clean_input(const char* inputs, char* output);
 void parse_input(char* input);
 
@@ -33,6 +34,8 @@ void parse_input(char* input);
         else if(strcmp(user_input, "list\n")==0){print_vectors();}
         else if(strcmp(user_input, "clear\n")==0){clear_list();}
         else if(strcmp(user_input, "quit\n") == 0){break;}
+        else if(strcmp(user_input, "load\n") == 0){load();}
+        else if(strcmp(user_input, "save\n") == 0){save();}
         else{
             parse_input(clean_array);
         }
@@ -220,6 +223,11 @@ void clean_input(const char* inputs, char* output){
                 }
 
             }
+            else if(token4 != NULL){
+                if(is_float(token2) && is_float(token3) && is_float(token4)){
+                    assign(token, atof(token2), atof(token3), atof(token4));
+                }
+            }
             else if(strcmp(token2,"x") == 0 ){
 
                 if(find_vector(token, 1)>-1){
@@ -229,9 +237,37 @@ void clean_input(const char* inputs, char* output){
                     }
                 }
             }
+            else{
+                if(is_float(token2) && is_float(token3)){
+                    assign(token, atof(token2), atof(token3), 0.0);
+                }
+            }
         }
         else{
             printf("Error: invalid input, try again(-h for help)\n");
         }
     }
+ }
+void load(){
+    clear_list();
+  char clean[100];
+  char buffer[100];
+  FILE* fptr;
+  char* filename = (char*)malloc(20*sizeof(char));
+  printf("Enter filename:\n");
+  fgets(filename, 20, stdin);
+  filename[strcspn(filename, "\n")] = '\0';
+  fptr = fopen(filename, "r");
+  if(fptr == NULL){
+    printf("Error: File not found\n");
+  }
+  else{
+    while (fgets(buffer, sizeof(buffer), fptr) != NULL) { // Read a line
+        // printf("Content: %s\n", buffer);
+        clean_input(buffer, clean);
+        parse_input(clean);
+    }
+    fclose(fptr);
+  }
+  free(filename);
  }

@@ -3,4 +3,6 @@
 #object files
 *.o
 #exe file
-lab6
+lab7
+#txt files
+*.txt

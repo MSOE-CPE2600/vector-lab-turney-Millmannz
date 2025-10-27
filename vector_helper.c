@@ -143,7 +143,8 @@ void clear_list() {
         current = next;        // Move to next
     }
 
-    head->next = NULL;  // Set original head to NULL
+    head->next = NULL; 
+    head = NULL; // Set original head to NULL
 }
 void help(){
     printf("=== Vector Calculator Help ===\n");
@@ -176,3 +177,49 @@ void help(){
     printf("  d = c * 2\n");
     printf("  a + d\n");
  }
+ void save(){
+  char answer[10];
+  Node *current = head;
+  FILE* fptr;
+  char* filename = (char*)malloc(20*sizeof(char));
+  printf("Enter filename:\n");
+  fgets(filename, 20, stdin);
+  filename[strcspn(filename, "\n")] = '\0';
+  fptr = fopen(filename, "r");
+  if(fptr != NULL){
+    fclose(fptr);
+    printf("File already exists. Overwrite?(Y/N)\n");
+    scanf("%s", answer);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+    if(strcmp(answer, "Y") == 0){
+      fptr = fopen(filename, "w");
+      while(current != NULL){
+        fprintf(fptr, "%s",current->vectors.name);
+        fprintf(fptr,",");
+        fprintf(fptr, "%f" ,current->vectors.x);
+        fprintf(fptr,",");
+        fprintf(fptr, "%f" ,current->vectors.y);
+        fprintf(fptr,",");
+        fprintf(fptr, "%f\n" ,current->vectors.z);
+        current = current->next;
+      }
+        fclose(fptr);
+    }
+  }
+  else{
+    fptr = fopen(filename, "w");
+    while(current != NULL){
+      fprintf(fptr, "%s",current->vectors.name);
+      fprintf(fptr,",");
+      fprintf(fptr, "%f" ,current->vectors.x);
+      fprintf(fptr,",");
+      fprintf(fptr, "%f" ,current->vectors.y);
+      fprintf(fptr,",");
+      fprintf(fptr, "%f\n" ,current->vectors.z);
+      current = current->next;
+    }
+    fclose(fptr);
+  free(filename);
+ }
+}

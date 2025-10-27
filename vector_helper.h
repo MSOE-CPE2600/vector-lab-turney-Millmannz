@@ -19,5 +19,6 @@ float getZ(char* name);
 int is_float(const char *input);
 void help();
 void clear();
+void save();
 vector* newVector(char name[], float x, float y, float z);
 Node* new_node(Node *next, Node *prev, char name[], float x, float y, float z);
