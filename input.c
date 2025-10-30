@@ -263,8 +263,7 @@ void load(){
     printf("Error: File not found\n");
   }
   else{
-    while (fgets(buffer, sizeof(buffer), fptr) != NULL) { // Read a line
-        // printf("Content: %s\n", buffer);
+    while (fgets(buffer, sizeof(buffer), fptr) != NULL) {
         clean_input(buffer, clean);
         parse_input(clean);
     }
